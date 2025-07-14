@@ -1,0 +1,21 @@
+{
+  "name": "pulsenet-contracts",
+  "version": "1.0.0",
+  "description": "PulseNet Smart Contracts",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy-sepolia.js --network sepolia",
+    "verify:sepolia": "echo 'Run: npx hardhat verify --network sepolia <contract_address> <constructor_args>'"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^17.2.0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "pulsenet-mvp",
+  "version": "1.0.0",
+  "description": "PulseNet MVP - Decentralized Health Data Marketplace",
+  "scripts": {
+    "setup": "./scripts/start-mvp.sh",
+    "start": "./scripts/start-mvp.sh",
+    "install-all": "cd contracts && npm install && cd ../backend && npm install && cd ../frontend && npm install",
+    "clean": "rm -rf */node_modules */package-lock.json"
+  },
+  "keywords": [
+    "blockchain",
+    "health-data",
+    "zero-knowledge",
+    "ethereum",
+    "privacy",
+    "marketplace"
+  ],
+  "author": "PulseNet Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "workspaces": [
+    "contracts",
+    "backend", 
+    "frontend"
+  ]
+}
