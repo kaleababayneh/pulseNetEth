@@ -63,17 +63,28 @@ router.post('/submit', async (req, res) => {
       });
     }
 
-    // Step 3: Submit data hash to blockchain
-    const blockchainResult = await blockchainService.submitDataHash(zkResult.dataHash);
-
-    if (!blockchainResult.success) {
-      console.error('Blockchain submission failed:', blockchainResult.error);
-      // Continue anyway for MVP - data is stored off-chain
+    // Step 3: Submit data hash to blockchain (optional - frontend handles this now)
+    let blockchainResult = { success: false, error: 'Frontend handles blockchain submission' };
+    
+    try {
+      if (blockchainService.initialized) {
+        blockchainResult = await blockchainService.submitDataHash(zkResult.dataHash);
+      }
+    } catch (error) {
+      console.log('ℹ️  Blockchain service not available, frontend will handle transactions');
     }
 
     // Step 4: Get updated user stats
     const submissionCount = dataStorage.getUserSubmissionCount(healthData.userAddress);
-    const tokenBalance = await blockchainService.getUserTokenBalance(healthData.userAddress);
+    let tokenBalance = '0';
+    
+    try {
+      if (blockchainService.initialized) {
+        tokenBalance = await blockchainService.getUserTokenBalance(healthData.userAddress);
+      }
+    } catch (error) {
+      console.log('ℹ️  Token balance check skipped, service not available');
+    }
 
     console.log(`✅ Health data submitted successfully by ${healthData.userAddress}`);
 

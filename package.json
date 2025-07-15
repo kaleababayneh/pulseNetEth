@@ -18,10 +18,12 @@
   ],
   "author": "PulseNet Team",
   "license": "MIT",
-  "devDependencies": {},
   "workspaces": [
     "contracts",
-    "backend", 
+    "backend",
     "frontend"
-  ]
+  ],
+  "dependencies": {
+    "thirdweb": "^5.105.16"
+  }
 }
