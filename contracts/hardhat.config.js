@@ -25,8 +25,13 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY && process.env.PRIVATE_KEY !== "YOUR_PRIVATE_KEY_HERE" 
         ? [process.env.PRIVATE_KEY] 
         : []
-    }
-  },
+    },
+    hedera: {
+      url: process.env.HEDERA_URL || "https://testnet.mirrornode.hedera.com/",
+      accounts: process.env.PRIVATE_KEY && process.env.PRIVATE_KEY !== "YOUR_PRIVATE_KEY_HERE"
+        ? [process.env.PRIVATE_KEY]
+        : []
+    },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY
   }

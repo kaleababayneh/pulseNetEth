@@ -328,5 +328,15 @@
     "zkProof": "zkp-e0ff6ed2-fca60c71041848206641e8e9100d12a6-verified",
     "dataHash": "0xe0ff6ed2cf4940ca7f5288eab71144445b0f541b3e9a69b2e8ac482583ed12eb",
     "id": "md77mprsjaie0dimlsa"
+  },
+  {
+    "userAddress": "0x7a30d670ebeb9620e35bc6034aee69c4fa5bc50b",
+    "heartRate": 80,
+    "sleepHours": 8,
+    "steps": 1100,
+    "timestamp": 1752749842489,
+    "zkProof": "zkp-ff2a3c22-fc7d8dcb6bbeabdeb8e7229066bf671d-verified",
+    "dataHash": "0xff2a3c22949a5b94abe3c735e0a2e855b554edb4d4ed8635814f60b37b830e4a",
+    "id": "md7a021fd1v9bqhx6uf"
   }
 ]

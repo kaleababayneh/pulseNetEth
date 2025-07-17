@@ -151,11 +151,11 @@ export const WalletProvider = ({ children }) => {
   const switchToCorrectNetwork = async () => {
     const network = getCurrentNetwork();
     
-    if (network.chainId === 11155111) { // Sepolia
+    if (network.chainId === 296) { // Sepolia
       try {
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0xaa36a7' }], // Sepolia chain ID in hex
+          params: [{ chainId: '0x128' }], // Sepolia chain ID in hex
         });
         return true;
       } catch (error) {
@@ -166,25 +166,24 @@ export const WalletProvider = ({ children }) => {
               method: 'wallet_addEthereumChain',
               params: [{
                 chainId: '0xaa36a7',
-                chainName: 'Sepolia Test Network',
+                chainName: 'HEDERA Test Network',
                 nativeCurrency: {
-                  name: 'Ethereum',
-                  symbol: 'ETH',
+                  name: 'Hedera',
+                  symbol: 'HBAR',
                   decimals: 18,
                 },
-                rpcUrls: ['https://sepolia.infura.io/v3/', 'https://rpc.sepolia.dev'],
-                blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+                
               }],
             });
             return true;
           } catch (addError) {
             console.error('Error adding network:', addError);
-            toast.error('Failed to add Sepolia network. Please add it manually.');
+            toast.error('Failed to add Hedera testnet network. Please add it manually.');
             return false;
           }
         } else {
-          console.error('Error switching to Sepolia:', error);
-          toast.error('Failed to switch to Sepolia network.');
+          console.error('Error switching to Hedera testnet:', error);
+          toast.error('Failed to switch to Hedera testnet network.');
           return false;
         }
       }

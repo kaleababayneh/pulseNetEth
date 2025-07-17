@@ -14,10 +14,10 @@ export const NETWORKS = {
   
   // Ethereum Sepolia Testnet
   sepolia: {
-    chainId: 11155111,
-    name: 'Sepolia Testnet',
-    rpcUrl: 'https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID',
-    blockExplorer: 'https://sepolia.etherscan.io',
+    chainId: 296,
+    name: 'Hedera Testnet',
+    rpcUrl: 'https://testnet.mirrornode.hedera.com/',
+    blockExplorer: 'https://testnet.mirrornode.hedera.com/',
     contracts: {
       PulseNet: '0x0000000000000000000000000000000000000000', // Will be updated after deployment
       PulseToken: '0x0000000000000000000000000000000000000000' // Will be updated after deployment
