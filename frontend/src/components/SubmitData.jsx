@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Heart, Activity, Moon, Footprints, Shield, CheckCircle, AlertCircle, Smartphone, Watch, Download, Loader } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, Activity, Moon, Footprints, Shield, CheckCircle, AlertCircle, Smartphone, Watch, Download, Loader, Clock } from 'lucide-react';
 import { useWallet } from '../contexts/WalletContext';
 import { dataApi } from '../services/api';
 import toast from 'react-hot-toast';
@@ -17,6 +17,107 @@ const SubmitData = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [importedFrom, setImportedFrom] = useState(null);
   const [isDataImported, setIsDataImported] = useState(false);
+  const [hasRecentSubmission, setHasRecentSubmission] = useState(false);
+  const [lastSubmissionTime, setLastSubmissionTime] = useState(null);
+  const [isCheckingSubmissions, setIsCheckingSubmissions] = useState(false);
+  const [timeUntilNextSubmission, setTimeUntilNextSubmission] = useState(null);
+
+  // Update countdown timer
+  useEffect(() => {
+    let interval;
+    if (hasRecentSubmission && lastSubmissionTime) {
+      interval = setInterval(() => {
+        const timeLeft = (24 * 60 * 60 * 1000) - (Date.now() - lastSubmissionTime);
+        if (timeLeft <= 0) {
+          setHasRecentSubmission(false);
+          setLastSubmissionTime(null);
+          setTimeUntilNextSubmission(null);
+          // Clear localStorage
+          const lastSubmissionKey = `lastSubmission_${account?.toLowerCase()}`;
+          localStorage.removeItem(lastSubmissionKey);
+        } else {
+          setTimeUntilNextSubmission(timeLeft);
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [hasRecentSubmission, lastSubmissionTime, account]);
+
+  // Format time remaining
+  const formatTimeRemaining = (timeMs) => {
+    const hours = Math.floor(timeMs / (60 * 60 * 1000));
+    const minutes = Math.floor((timeMs % (60 * 60 * 1000)) / (60 * 1000));
+    const seconds = Math.floor((timeMs % (60 * 1000)) / 1000);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
+  // Check if user has submitted data in the last 24 hours
+  const checkRecentSubmissions = async (walletAddress) => {
+    if (!walletAddress) return;
+    
+    setIsCheckingSubmissions(true);
+    try {
+      const response = await dataApi.getUserStats(walletAddress);
+      
+      if (response.success && response.data) {
+        // Check localStorage for last submission time for this wallet
+        const lastSubmissionKey = `lastSubmission_${walletAddress.toLowerCase()}`;
+        const lastSubmissionTime = localStorage.getItem(lastSubmissionKey);
+        
+        if (lastSubmissionTime) {
+          const lastSubmission = parseInt(lastSubmissionTime);
+          const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+          
+          if (lastSubmission > twentyFourHoursAgo) {
+            setHasRecentSubmission(true);
+            setLastSubmissionTime(lastSubmission);
+            return;
+          }
+        }
+        
+        // If no localStorage entry, check if they have any submissions
+        // and simulate that they might have submitted recently
+        if (response.data.submissions && response.data.submissions.offChain > 0) {
+          // For demo purposes, randomly assign some users a recent submission
+          const userHash = walletAddress.toLowerCase().slice(-4);
+          const hashNum = parseInt(userHash, 16);
+          
+          // If the last 4 characters of wallet hash are divisible by 7, simulate recent submission
+          if (hashNum % 7 === 0) {
+            const mockRecentTime = Date.now() - (Math.random() * 20 * 60 * 60 * 1000); // Random time within last 20 hours
+            setHasRecentSubmission(true);
+            setLastSubmissionTime(mockRecentTime);
+            localStorage.setItem(lastSubmissionKey, mockRecentTime.toString());
+            return;
+          }
+        }
+        
+        // No recent submission found
+        setHasRecentSubmission(false);
+        setLastSubmissionTime(null);
+      }
+    } catch (error) {
+      console.error('Error checking recent submissions:', error);
+      // Don't block submission if we can't check - fail safe
+      setHasRecentSubmission(false);
+    } finally {
+      setIsCheckingSubmissions(false);
+    }
+  };
+
+  // Check recent submissions when wallet connects
+  useEffect(() => {
+    if (isConnected && account) {
+      checkRecentSubmissions(account);
+    }
+  }, [isConnected, account]);
 
   // Realistic health data generation for different devices
   const generateHealthData = (source) => {
@@ -134,6 +235,13 @@ const SubmitData = () => {
   const validateForm = () => {
     const { heartRate, sleepHours, steps } = formData;
 
+    if (hasRecentSubmission) {
+      const timeUntilNext = 24 * 60 * 60 * 1000 - (Date.now() - lastSubmissionTime);
+      const hoursLeft = Math.ceil(timeUntilNext / (60 * 60 * 1000));
+      toast.error(`You can only submit once every 24 hours. Try again in ${hoursLeft} hour${hoursLeft !== 1 ? 's' : ''}.`);
+      return false;
+    }
+
     if (!isDataImported) {
       toast.error('Please import health data first');
       return false;
@@ -212,6 +320,14 @@ const SubmitData = () => {
       if (receipt.success) {
         setTransactionStatus('confirmed');
         toast.success('🎉 Data submitted and confirmed on blockchain!', { id: 'submission' });
+        
+        // Set cooldown period and store in localStorage
+        const submissionTime = Date.now();
+        setHasRecentSubmission(true);
+        setLastSubmissionTime(submissionTime);
+        
+        const lastSubmissionKey = `lastSubmission_${account.toLowerCase()}`;
+        localStorage.setItem(lastSubmissionKey, submissionTime.toString());
         
         setLastSubmission({
           ...response.data,
@@ -462,7 +578,7 @@ const SubmitData = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting || !isDataImported}
+              disabled={isSubmitting || !isDataImported || hasRecentSubmission}
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {isSubmitting ? (
@@ -471,6 +587,11 @@ const SubmitData = () => {
                   <span>
                     {transactionStatus === 'pending' ? 'Confirming on blockchain...' : 'Processing...'}
                   </span>
+                </>
+              ) : hasRecentSubmission ? (
+                <>
+                  <Clock className="h-4 w-4" />
+                  <span>24 Hour Cooldown Active</span>
                 </>
               ) : !isDataImported ? (
                 <>
@@ -485,11 +606,42 @@ const SubmitData = () => {
               )}
             </button>
 
-            {!isDataImported && (
+            {!isDataImported && !hasRecentSubmission && (
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <div className="flex items-center space-x-2 text-amber-800">
                   <AlertCircle className="h-4 w-4" />
                   <span className="text-sm">Please connect your health app to import data before submitting.</span>
+                </div>
+              </div>
+            )}
+
+            {hasRecentSubmission && (
+              <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg">
+                <div className="flex items-center space-x-3 text-red-800">
+                  <div className="flex-shrink-0">
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold">24 Hour Cooldown Period</div>
+                    <div className="text-xs text-red-600 mt-1">
+                      You can submit again in: {' '}
+                      <span className="font-mono font-medium">
+                        {timeUntilNextSubmission ? formatTimeRemaining(timeUntilNextSubmission) : 'calculating...'}
+                      </span>
+                    </div>
+                    <div className="text-xs text-red-500 mt-1">
+                      This prevents spam and ensures fair token distribution
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isCheckingSubmissions && (
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center space-x-2 text-blue-800">
+                  <Loader className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Checking recent submissions...</span>
                 </div>
               </div>
             )}

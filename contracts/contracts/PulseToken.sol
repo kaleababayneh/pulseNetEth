@@ -16,10 +16,6 @@ contract PulseToken is ERC20, Ownable {
     function setPulseNetContract(address _pulseNetContract) external onlyOwner {
         pulseNetContract = _pulseNetContract;
     }
-    
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount);
-    }
 
     function mintReward(address to, uint256 amount) external {
         require(msg.sender == pulseNetContract, "Only PulseNet contract can mint rewards");
