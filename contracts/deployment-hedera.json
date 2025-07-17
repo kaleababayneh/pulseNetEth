@@ -1,0 +1,18 @@
+{
+  "network": "hedera-testnet",
+  "chainId": 296,
+  "deployer": "0x7a30d670ebEb9620E35bC6034AeE69c4Fa5BC50B",
+  "contracts": {
+    "PulseToken": "0x90Be5Bf44be09D3FC6516695DEad2B6DaD365e09",
+    "PulseNet": "0xeeF4ce53de33bBcffcDbd849ba96322046062A98"
+  },
+  "blockNumbers": {
+    "PulseToken": 22356249,
+    "PulseNet": 22356253
+  },
+  "timestamp": "2025-07-17T13:01:42.603Z",
+  "explorerUrls": {
+    "PulseToken": "https://hashscan.io/testnet/contract/0x90Be5Bf44be09D3FC6516695DEad2B6DaD365e09",
+    "PulseNet": "https://hashscan.io/testnet/contract/0xeeF4ce53de33bBcffcDbd849ba96322046062A98"
+  }
+}

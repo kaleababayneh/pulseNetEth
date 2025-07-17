@@ -4,8 +4,7 @@ const crypto = require('crypto');
 
 const router = express.Router();
 
-// In-memory storage for user registrations and device fingerprints
-// In production, this should be replaced with a proper database
+
 const userRegistry = new Map();
 const deviceFingerprints = new Map();
 

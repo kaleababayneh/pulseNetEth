@@ -24,6 +24,7 @@ contract PulseNet is Ownable {
     
     constructor(address _pulseToken, address initialOwner) Ownable(initialOwner) {
         pulseToken = PulseToken(_pulseToken);
+        // Note: setPulseNetContract must be called by the PulseToken owner after deployment
     }
     
     /**
@@ -56,7 +57,7 @@ contract PulseNet is Ownable {
      * @param amount Amount of tokens to reward
      */
     function _rewardUser(address user, uint256 amount) internal {
-        pulseToken.transfer(user, amount);
+        pulseToken.mintReward(user, amount);
         emit UserRewarded(user, amount);
     }
     

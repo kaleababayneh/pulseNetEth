@@ -27,12 +27,16 @@ module.exports = {
         : []
     },
     hedera: {
-      url: process.env.HEDERA_URL || "https://testnet.mirrornode.hedera.com/",
+      url: process.env.HEDERA_URL || "https://testnet.hashio.io/api",
       accounts: process.env.PRIVATE_KEY && process.env.PRIVATE_KEY !== "YOUR_PRIVATE_KEY_HERE"
         ? [process.env.PRIVATE_KEY]
-        : []
-    },
+        : [],
+      chainId: 296,
+      gasPrice: 360000000000, // 360 gwei (minimum for Hedera)
+      gas: 3000000
+    }
+  },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
+    apiKey: process.env.ETHERSCAN_API_KEY || "dummy-api-key"
   }
 };

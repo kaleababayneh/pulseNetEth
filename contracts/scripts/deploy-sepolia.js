@@ -43,12 +43,12 @@ async function main() {
   const pulseNetAddress = await pulseNet.getAddress();
   console.log("✅ PulseNet deployed to:", pulseNetAddress);
 
-  // Transfer tokens to PulseNet contract for rewards
-  console.log("\n💰 Transferring tokens to PulseNet for rewards...");
-  const rewardPool = hre.ethers.parseEther("100000"); // 100k tokens for rewards
-  const transferTx = await pulseToken.transfer(pulseNetAddress, rewardPool);
-  await transferTx.wait();
-  console.log("✅ Transferred 100k PULSE tokens to PulseNet contract");
+  // Authorize PulseNet to mint tokens
+  console.log("\n🔐 Authorizing PulseNet to mint PULSE tokens...");
+  const authTx = await pulseToken.setPulseNetContract(pulseNetAddress);
+  await authTx.wait();
+  console.log("✅ PulseNet is now authorized to mint PULSE tokens as rewards");
+  console.log("💡 Tokens will be minted directly to users when they submit health data");
 
   // Save deployment info
   const deploymentInfo = {

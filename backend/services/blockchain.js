@@ -138,9 +138,7 @@ class BlockchainService {
     }
   }
 
-  /**
-   * Get user submission count
-   */
+ 
   async getUserSubmissionCount(userAddress) {
     if (!this.initialized || !this.pulseNetContract) {
       return 0;

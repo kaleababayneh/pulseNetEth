@@ -7,8 +7,8 @@ export const NETWORKS = {
     rpcUrl: 'http://127.0.0.1:8545',
     blockExplorer: null,
     contracts: {
-      PulseNet: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
-      PulseToken: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+      PulseNet: '0xeeF4ce53de33bBcffcDbd849ba96322046062A98',
+      PulseToken: '0x90Be5Bf44be09D3FC6516695DEad2B6DaD365e09'
     }
   },
   
@@ -19,8 +19,8 @@ export const NETWORKS = {
     rpcUrl: 'https://testnet.mirrornode.hedera.com/',
     blockExplorer: 'https://testnet.mirrornode.hedera.com/',
     contracts: {
-      PulseNet: '0x0000000000000000000000000000000000000000', // Will be updated after deployment
-      PulseToken: '0x0000000000000000000000000000000000000000' // Will be updated after deployment
+      PulseNet: '0xeeF4ce53de33bBcffcDbd849ba96322046062A98', // Will be updated after deployment
+      PulseToken: '0x90Be5Bf44be09D3FC6516695DEad2B6DaD365e09' // Will be updated after deployment
     }
   }
 };
