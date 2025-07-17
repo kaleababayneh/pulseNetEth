@@ -8,7 +8,6 @@ import SubmitDataPage from './pages/SubmitDataPage';
 import BuyerDashboard from './pages/BuyerDashboard';
 import UserDashboard from './pages/UserDashboard';
 import AdminPanel from './pages/AdminPanel';
-import { ThirdwebProvider } from "thirdweb/react";
 
 function App() {
   return (
