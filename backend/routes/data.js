@@ -6,12 +6,22 @@ const dataStorage = require('../services/dataStorage');
 
 const router = express.Router();
 
+// Import user registry from user routes (in production, use shared database)
+const userRoutes = require('./user');
+
+// Function to verify user registration and device fingerprint
+const verifyUserRegistration = (userAddress, deviceFingerprint) => {
+  // This is a simple check - in production, implement proper user verification
+  return true; // For now, allow all submissions
+};
+
 // Validation schema for health data
 const healthDataSchema = Joi.object({
   userAddress: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   heartRate: Joi.number().min(30).max(220).required(),
   sleepHours: Joi.number().min(0).max(24).required(),
   steps: Joi.number().min(0).max(100000).required(),
+  deviceFingerprint: Joi.string().min(32).optional(),
   timestamp: Joi.number().optional()
 });
 

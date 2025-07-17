@@ -14,6 +14,7 @@ require('./init');
 const healthRoutes = require('./routes/health');
 const dataRoutes = require('./routes/data');
 const rewardRoutes = require('./routes/rewards');
+const userRoutes = require('./routes/user');
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
 
@@ -40,6 +41,7 @@ app.use(requestLogger);
 app.use('/api/health', healthRoutes);
 app.use('/api/data', dataRoutes);
 app.use('/api/rewards', rewardRoutes);
+app.use('/api/user', userRoutes);
 
 // Health check endpoint
 app.get('/api/status', (req, res) => {
